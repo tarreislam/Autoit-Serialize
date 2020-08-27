@@ -112,7 +112,8 @@ Func __Serialize_SerializeScriptingDictionary(Const $obj)
 	For $i = 0 To $count - 1
 		Local $key = $keys[$i]
 		Local $value = $values[$i]
-		$serialized &= StringFormat('%s:%s', StringToBinary($key), __Serialize_Serialize($value, '$'))
+		; $key was stringToBinaried
+		$serialized &= StringFormat('%s:%s', $key, __Serialize_Serialize($value, '$'))
 	Next
 
 	$serialized = $count > 0 ? StringTrimRight($serialized, 1) : $serialized
@@ -146,7 +147,7 @@ Func __Serialize_UnSerializeScriptingDictionary(Const $var)
 
 	For $i = 1 To $parts[0]
 		Local $part = StringSplit($parts[$i], ":", 2)
-		Local $key = BinaryToString($part[0])
+		Local $key = $part[0] ; BinaryToString wrap will cause performece issues, but this is more unsafe.
 		Local $val = _UnSerialize($part[1])
 		$oObj.add($key, $val)
 	Next
