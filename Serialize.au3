@@ -50,37 +50,33 @@ EndFunc   ;==>_Serialize
 ; Example .......: No
 ; ===============================================================================================================================
 Func _UnSerialize(Const $source)
-	Local Const $parts = StringSplit($source, "#")
 
-	For $i = 1 To $parts[0]
-		Local $part = StringSplit($parts[$i], '|', 2)
-		Local $type = $part[0]
-		Local $val = $part[1]
+	Local Const $part = StringSplit($source, '|', 2)
+	Local Const $val = $part[1]
 
-		Switch $type
-			Case "s"
-				Return BinaryToString($val)
-			Case "a"
-				Return __Serialize_UnSerializeArray($val)
-			Case "o"
-				Return __Serialize_UnSerializeScriptingDictionary($val)
-			Case "b"
-				Return $val == 1
-			Case "Int32"
-				Return Number($val, 1)
-			Case "Int64"
-				Return Number($val, 2)
-			Case "Ptr"
-				Return Ptr($val)
-			Case "Binary"
-				Return Binary($val)
-			Case "Double"
-				Return Number($val, 3)
-			Case "Keyword"
-				Return Null
-		EndSwitch
+	Switch $part[0]; type
+		Case "s"
+			Return BinaryToString($val)
+		Case "a"
+			Return __Serialize_UnSerializeArray($val)
+		Case "o"
+			Return __Serialize_UnSerializeScriptingDictionary($val)
+		Case "b"
+			Return $val == 1
+		Case "Int32"
+			Return Number($val, 1)
+		Case "Int64"
+			Return Number($val, 2)
+		Case "Ptr"
+			Return Ptr($val)
+		Case "Binary"
+			Return Binary($val)
+		Case "Double"
+			Return Number($val, 3)
+		Case "Keyword"
+			Return Null
+	EndSwitch
 
-	Next
 
 EndFunc   ;==>UnSerialize
 
