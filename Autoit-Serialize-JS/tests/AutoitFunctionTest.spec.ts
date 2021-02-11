@@ -1,4 +1,4 @@
-import AutoItFunctions from "../src/AutoItFunctions";
+import AutoItFunctions from "../src/AutoIt/AutoItFunctions";
 import {expect} from 'chai';
 import 'mocha';
 

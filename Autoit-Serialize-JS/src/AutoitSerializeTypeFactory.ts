@@ -1,12 +1,18 @@
-import {AutoItTypes} from "./AutoItTypes";
+import {AutoItTypes} from "./AutoIt/AutoItTypes";
 
 export default class AutoitSerializeTypeFactory {
 
-    static make(type: AutoItTypes, source: any, glue: string): string {
+    protected glue: string
+
+    constructor(glue: string) {
+        this.glue = glue
+    }
+
+    make(type: AutoItTypes, source: any): string {
         if (typeof source === null) {
-            return type + '|' + glue
+            return type + '|' + this.glue
         }
-        return type + '|' + source + glue
+        return type + '|' + source + this.glue
     }
 
 }

@@ -1,5 +1,5 @@
-import AutoItFunctions from "./src/AutoItFunctions";
-import {AutoItTypes} from "./src/AutoItTypes";
+import AutoItFunctions from "./src/AutoIt/AutoItFunctions";
+import {AutoItTypes} from "./src/AutoIt/AutoItTypes";
 import AutoitSerializeTypeFactory from "./src/AutoitSerializeTypeFactory";
 import {UnSerializedValue} from "./src/UnSerializedValue";
 
@@ -36,39 +36,49 @@ export class AutoitSerializeJS {
 
     protected serializeSerialize(source: any, glue: string = '#'): string {
         const type = typeof source
+        const AsTf = new AutoitSerializeTypeFactory(glue)
+
 
         if (Array.isArray(source)) {
-            return AutoitSerializeTypeFactory.make(AutoItTypes.Array, source, glue)
+            return AsTf.make(AutoItTypes.Array, this.serializeArray(source))
         } else if (source === null) {
-            return AutoitSerializeTypeFactory.make(AutoItTypes.Keyword, null, glue)
+            return AsTf.make(AutoItTypes.Keyword, null)
+        } else if (type === "number" && source % 1 !== 0) {
+            return AsTf.make(AutoItTypes.Double, source)
         } else {
             switch (type) {
                 case "object":
-                    return 'o|xxx' + glue// TODO
-                case 'string':
-                    return 's|' + AutoItFunctions.stringToBinary(source) + glue
+                    return AsTf.make(AutoItTypes.Object, this.serializeScriptingDictionary(source))
+                case "string":
+                    return AsTf.make(AutoItTypes.String, AutoItFunctions.stringToBinary(source))
                 case 'boolean':
-                    return 'b|' + (source ? 1 : 0) + glue
-                case 'bigint':
-                    return 'Int64|' + source + glue
+                    return AsTf.make(AutoItTypes.Boolean, (source ? 1 : 0))
                 case 'number':
-                    return 'Double|' + source + glue
+                    return AsTf.make(AutoItTypes.Boolean, source)
             }
         }
     }
 
-    protected serializeArray(array: Array<any>) {
-        let serializedArray: string
+    protected serializeArray(array: Array<any>): string {
+        const parts: Array<any> = []
 
         array.forEach((item) => {
-            serializedArray += this.serializeSerialize(item, '$')
+            parts.push(this.serializeSerialize(item, ''))
         })
 
-        serializedArray = array.length > 0 ? serializedArray.slice(0, -1) : serializedArray
-        serializedArray = AutoItFunctions.stringToBinary(serializedArray)
+        return AutoItFunctions.stringToBinary(parts.join('$'))
+    }
 
-        return serializedArray
+    protected serializeScriptingDictionary(object: object): string {
+        const keys: Array<string> = Object.keys(object)
+        const parts: Array<any> = []
 
+        keys.forEach((key) => {
+            const value: any = object[key]
+            parts.push(this.serializeSerialize(value, ''))
+        })
+
+        return AutoItFunctions.stringToBinary(parts.join('$'))
     }
 
     // Here comes the unserialize part
