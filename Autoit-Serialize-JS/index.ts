@@ -54,7 +54,7 @@ export class AutoitSerializeJS {
                 case 'boolean':
                     return AsTf.make(AutoItTypes.Boolean, (source ? 1 : 0))
                 case 'number':
-                    return AsTf.make(AutoItTypes.Boolean, source)
+                    return AsTf.make(AutoItTypes.Int32, source)
             }
         }
     }
