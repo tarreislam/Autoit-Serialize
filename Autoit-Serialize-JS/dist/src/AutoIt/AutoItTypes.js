@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.AutoItTypes = void 0;
 var AutoItTypes;
 (function (AutoItTypes) {
@@ -15,3 +15,4 @@ var AutoItTypes;
     AutoItTypes["Boolean"] = "b";
     AutoItTypes["SpecialEmptyObject"] = "o|";
 })(AutoItTypes = exports.AutoItTypes || (exports.AutoItTypes = {}));
+//# sourceMappingURL=AutoItTypes.js.map
