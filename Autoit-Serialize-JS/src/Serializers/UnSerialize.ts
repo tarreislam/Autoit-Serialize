@@ -9,7 +9,6 @@ export class UnSerialize {
         const val: string = part[1]
 
         switch (part[0]) { // type
-            case AutoItTypes.Ptr:
             case AutoItTypes.Binary:
             case AutoItTypes.String:
                 return this.unSerializeString(val)
@@ -23,6 +22,7 @@ export class UnSerialize {
                 return this.unSerializeScriptingObject(val)
             case AutoItTypes.Boolean:
                 return this.unSerializeBoolean(val)
+            case AutoItTypes.Ptr:
             case AutoItTypes.Int32:
             case AutoItTypes.Int64:
                 return this.unSerializeInt(val)

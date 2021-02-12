@@ -55,6 +55,11 @@ export class Serialize {
     }
 
     protected serializeArray(array: Array<any>): string {
+        // AutoIt cannot handle empty arrays. Add 0
+        if(array.length === 0){
+            array.push(0)
+        }
+
         const parts: Array<any> = []
 
         array.forEach((item) => {
