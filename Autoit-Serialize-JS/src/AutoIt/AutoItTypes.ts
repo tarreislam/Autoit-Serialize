@@ -9,4 +9,5 @@ export enum AutoItTypes {
     Keyword = 'Keyword',
     Object = 'o',
     Boolean = 'b',
+    SpecialEmptyObject = 'o|'
 }

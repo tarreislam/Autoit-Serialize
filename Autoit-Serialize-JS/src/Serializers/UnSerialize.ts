@@ -4,7 +4,7 @@ import {UnSerializedValue} from "../Types/UnSerializedValue";
 
 export class UnSerialize {
 
-    public unSerialize(source: any): UnSerializedValue {
+    public unSerialize(source: string): UnSerializedValue {
         const part: Array<any> = source.split('|')
         const val: string = part[1]
 
@@ -16,6 +16,10 @@ export class UnSerialize {
             case AutoItTypes.Array:
                 return this.unSerializeArray(val)
             case AutoItTypes.Object:
+                // Handle empty objects, yes this could probably be improved
+                if (source === AutoItTypes.SpecialEmptyObject) {
+                    return {}
+                }
                 return this.unSerializeScriptingObject(val)
             case AutoItTypes.Boolean:
                 return this.unSerializeBoolean(val)
