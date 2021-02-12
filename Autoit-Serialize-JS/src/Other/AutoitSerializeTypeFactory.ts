@@ -1,4 +1,4 @@
-import {AutoItTypes} from "./AutoIt/AutoItTypes";
+import {AutoItTypes} from "../AutoIt/AutoItTypes";
 
 export default class AutoitSerializeTypeFactory {
 
@@ -9,7 +9,7 @@ export default class AutoitSerializeTypeFactory {
     }
 
     make(type: AutoItTypes, source: any): string {
-        if (typeof source === null) {
+        if (source === null) {
             return type + '|' + this.glue
         }
         return type + '|' + source + this.glue

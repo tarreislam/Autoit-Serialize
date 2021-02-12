@@ -1,7 +1,7 @@
 import AutoItFunctions from "./src/AutoIt/AutoItFunctions";
 import {AutoItTypes} from "./src/AutoIt/AutoItTypes";
-import AutoitSerializeTypeFactory from "./src/AutoitSerializeTypeFactory";
-import {UnSerializedValue} from "./src/UnSerializedValue";
+import AutoitSerializeTypeFactory from "./src/Other/AutoitSerializeTypeFactory";
+import {UnSerializedValue} from "./src/Types/UnSerializedValue";
 
 export class AutoitSerializeJS {
 
@@ -10,25 +10,25 @@ export class AutoitSerializeJS {
     }
 
     public unSerialize(source: any): UnSerializedValue {
-        const part = source.split('|')
-        const val = part[1]
+        const part: Array<any> = source.split('|')
+        const val: string = part[1]
 
         switch (part[0]) { // type
             case AutoItTypes.Ptr:
             case AutoItTypes.Binary:
             case AutoItTypes.String:
-                return AutoItFunctions.binaryToString(val)
+                return this.unSerializeString(val)
             case AutoItTypes.Array:
                 return this.unSerializeArray(val)
             case AutoItTypes.Object:
                 return this.unSerializeScriptingObject(val)
             case AutoItTypes.Boolean:
-                return val === '1'
+                return this.unSerializeBoolean(val)
             case AutoItTypes.Int32:
             case AutoItTypes.Int64:
-                return parseInt(val)
+                return this.unSerializeInt(val)
             case AutoItTypes.Double:
-                return parseFloat(val)
+                return this.unSerializeFloat(val)
             case AutoItTypes.Keyword:
                 return null
         }
@@ -37,7 +37,6 @@ export class AutoitSerializeJS {
     protected serializeSerialize(source: any, glue: string = '#'): string {
         const type = typeof source
         const AsTf = new AutoitSerializeTypeFactory(glue)
-
 
         if (Array.isArray(source)) {
             return AsTf.make(AutoItTypes.Array, this.serializeArray(source))
@@ -50,7 +49,7 @@ export class AutoitSerializeJS {
                 case "object":
                     return AsTf.make(AutoItTypes.Object, this.serializeScriptingDictionary(source))
                 case "string":
-                    return AsTf.make(AutoItTypes.String, AutoItFunctions.stringToBinary(source))
+                    return AsTf.make(AutoItTypes.String, this.serializeString(source))
                 case 'boolean':
                     return AsTf.make(AutoItTypes.Boolean, (source ? 1 : 0))
                 case 'number':
@@ -59,14 +58,8 @@ export class AutoitSerializeJS {
         }
     }
 
-    protected serializeArray(array: Array<any>): string {
-        const parts: Array<any> = []
-
-        array.forEach((item) => {
-            parts.push(this.serializeSerialize(item, ''))
-        })
-
-        return AutoItFunctions.stringToBinary(parts.join('$'))
+    protected serializeString(string: string): string {
+        return AutoItFunctions.stringToBinary(string)
     }
 
     protected serializeScriptingDictionary(object: object): string {
@@ -78,7 +71,17 @@ export class AutoitSerializeJS {
             parts.push(this.serializeSerialize(value, ''))
         })
 
-        return AutoItFunctions.stringToBinary(parts.join('$'))
+        return this.serializeString(parts.join('$'))
+    }
+
+    protected serializeArray(array: Array<any>): string {
+        const parts: Array<any> = []
+
+        array.forEach((item) => {
+            parts.push(this.serializeSerialize(item, ''))
+        })
+
+        return this.serializeString(parts.join('$'))
     }
 
     // Here comes the unserialize part
@@ -89,9 +92,42 @@ export class AutoitSerializeJS {
     // Here comes the unserialize part
     // Here comes the unserialize part
 
+    protected unSerializeString(string: string): string {
+        return AutoItFunctions.binaryToString(string)
+    }
+
+    protected unSerializeInt(int: string): number {
+        return parseInt(int)
+    }
+
+    protected unSerializeFloat(float: string): number {
+        return parseFloat(float)
+    }
+
+    protected unSerializeBoolean(bool: string): boolean {
+        return bool === '1'
+    }
+
+    protected unSerializeScriptingObject(val: string) {
+        const oObj: object = {}
+        const payload: string = this.unSerializeString(val)
+
+        const parts: Array<string> = payload.split('$')
+
+        parts.forEach((part) => {
+            const subPart: Array<string> = part.split(':')
+            const key = subPart[0]
+            const val = subPart[1]
+
+            oObj[key] = this.unSerialize(val)
+        })
+
+        return oObj
+    }
+
     protected unSerializeArray(val: string): Array<any> {
 
-        const payload: string = AutoItFunctions.binaryToString(val)
+        const payload: string = this.unSerializeString(val)
         const parts: Array<string> = payload.split('$')
 
         const aNew: Array<UnSerializedValue> = []
@@ -101,26 +137,5 @@ export class AutoitSerializeJS {
         })
 
         return aNew
-    }
-
-    protected unSerializeScriptingObject(val: string) {
-        const oObj: object = {}
-        const payload: string = AutoItFunctions.binaryToString(val)
-
-        if (!payload) {
-            return oObj
-        }
-
-        const parts: Array<string> = payload.split('$')
-
-        parts.forEach((part) => {
-            const subPart = part.split(':')
-            const key = subPart[0]
-            const val = subPart[1]
-
-            oObj[key] = this.unSerialize(val)
-        })
-
-        return oObj
     }
 }
