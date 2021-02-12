@@ -29,6 +29,7 @@ export class UnSerialize {
             case AutoItTypes.Double:
                 return this.unSerializeFloat(val)
             case AutoItTypes.Keyword:
+            default:
                 return null
         }
     }

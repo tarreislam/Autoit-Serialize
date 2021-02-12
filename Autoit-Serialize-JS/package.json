@@ -4,8 +4,8 @@
   "description": "Serialize and UnSerialize data between autoit and Javascript",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -r ts-node/register tests/**/*.spec.ts",
-    "dev": "nodemon"
+    "test": "mocha -r ts-node/register __tests__/**/*.spec.ts",
+    "build": "tsc -p tsconfig.release.json"
   },
   "keywords": [
     "autoit",

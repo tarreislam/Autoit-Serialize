@@ -30,6 +30,8 @@ export class Serialize {
                     return AsTf.make(AutoItTypes.Int32, source)
             }
         }
+        // should not happen
+        return ''
     }
 
     protected serializeString(string: string): string {
@@ -56,7 +58,7 @@ export class Serialize {
 
     protected serializeArray(array: Array<any>): string {
         // AutoIt cannot handle empty arrays. Add 0
-        if(array.length === 0){
+        if (array.length === 0) {
             array.push(0)
         }
 
