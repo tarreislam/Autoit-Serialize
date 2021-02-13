@@ -1,1 +1,0 @@
-export type UnSerializedValue = bigint | boolean | string | object | null | number | Array<UnSerializedValue>
