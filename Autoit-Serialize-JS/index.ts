@@ -4,7 +4,7 @@ import {UnSerialize} from "./src/Serializers/UnSerialize";
 
 export default class {
 
-    static serialize(source: any): string {
+    static serialize(source: UnSerializedValue): string {
         return (new Serialize).serialize(source)
     }
 

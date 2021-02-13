@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "mocha -r ts-node/register __tests__/**/*.spec.ts",
+    "test:speed": "ts-node speed-test.ts",
     "build": "tsc -p tsconfig.release.json"
   },
   "keywords": [

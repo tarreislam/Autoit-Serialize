@@ -22,16 +22,15 @@ export class Serialize {
             switch (type) {
                 case "object":
                     return AsTf.make(AutoItTypes.Object, this.serializeScriptingDictionary(source))
-                case "string":
-                    return AsTf.make(AutoItTypes.String, this.serializeString(source))
                 case 'boolean':
                     return AsTf.make(AutoItTypes.Boolean, this.serializeBoolean(source))
                 case 'number':
                     return AsTf.make(AutoItTypes.Int32, source)
+                case "string":
+                default:
+                    return AsTf.make(AutoItTypes.String, this.serializeString(source))
             }
         }
-        // should not happen
-        return ''
     }
 
     protected serializeString(string: string): string {
