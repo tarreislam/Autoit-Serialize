@@ -1,7 +1,10 @@
 ## About Serialize
 **Serialize** a given value to get it's string representation, that you can later unSerialize back to its original value. Including nested arrays and objects. This is useful for storing and transferring data between applications.
 
+ **2021-02-14 update:** you can now serialize and unSerialize data in JavaScript as well. Checkout the official [npm package](https://www.npmjs.com/package/autoit-serialize-js) or the [github repo](https://github.com/tarreislam/Autoit-Serialize-JS). This makes it possible to pass data between AutoIt and JavaScript applications. Eventually I will make an package for PHP aswell.
+
 ## Limitations
+
 * Mutli dim arrays are not supported
 
 ## Examples
